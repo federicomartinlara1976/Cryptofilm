@@ -3,13 +3,9 @@ import pandas as pd
 import random
 
 from calendar import isleap
-from json import dumps
-from json import loads
-from kafka import KafkaProducer
-from kafka import KafkaConsumer
-from pymongo import MongoClient
 
-import cfg as cfg
+from core import funcionesKafka as fk
+from core import funcionesMongo as fm
 
 
 def loadPandaFrom(file_csv, indexCol):
@@ -105,38 +101,33 @@ def diasMes(mes, anio):
             return 28
 
 
-def getKafkaProducer():
-    return KafkaProducer(bootstrap_servers=[cfg.cfg['kafka.server']],
-                         value_serializer=lambda x:
-                         dumps(x).encode('utf-8'))
+def createUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email):
+    usuario = {}
+    usuario['nombre'] = nombre
+    usuario['apellidos'] = apellido_1 + ' ' + apellido_2
+    usuario['sexo'] = sexo
+    usuario['fechaNacimiento'] = fechaNacimiento
+    usuario['email'] = email
+
+    # Iniciar Kafka
+    producer = fk.getKafkaProducer()
+
+    # Enviarlo a Kafka
+    fk.sendToKafka(producer, usuario)
+    print("Enviado: " + str(usuario))
 
 
-def getKafkaConsumer():
-    return KafkaConsumer(cfg.cfg['kafka.topic'],
-                          bootstrap_servers=[cfg.cfg['kafka.server']],
-                          auto_offset_reset='earliest',
-                          enable_auto_commit=True,
-                          group_id='my-group',
-                          value_deserializer=lambda x: loads(x.decode('utf-8')))
+def insertUsersFromKafka():
+    # Iniciar Kafka
+    consumer = fk.getKafkaConsumer()
 
+    # Iniciar mongo
+    client = fm.getMongoClient()
+    database = fm.getDb(client)
+    collection = fm.getCollection(database)
 
-def sendToKafka(producer, user):
-    producer.send(cfg.cfg['kafka.topic'], value=user)
-
-
-def getMongoClient():
-    return MongoClient(cfg.cfg['mongo.server'])
-
-
-def getDb(client):
-    return client[cfg.cfg['mongo.database']]
-
-
-def getCollection(db):
-    return db[cfg.cfg['mongo.collection']]
-
-
-def consumeMessages(consumer, collection):
     for message in consumer:
         message = message.value
         collection.insert_one(message)
+
+

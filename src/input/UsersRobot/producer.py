@@ -16,9 +16,6 @@ if __name__ == '__main__':
     # Unir pdApellidos01 y pdApellidos02
     pdApellidos = f.concatFrames([pdApellidos01, pdApellidos02])
 
-    # Iniciar Kafka
-    producer = f.getKafkaProducer()
-
     for u in range(users):
 
         pdNombre = None
@@ -49,10 +46,5 @@ if __name__ == '__main__':
 
         fechaNacimiento = f.generarFechaNacimiento()
 
-        usuario = {'nombre': nombre, 'apellidos': apellido_1 + ' ' + apellido_2, 'sexo': sexo, 'fechaNacimiento': fechaNacimiento, 'email': email}
-
-        # Enviarlo a Kafka
-        f.sendToKafka(producer, usuario)
-        print("Enviado: " + str(usuario))
-
+        f.createUser(nombre, apellido_1, apellido_2, fechaNacimiento, sexo, email)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
