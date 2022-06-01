@@ -1,0 +1,9 @@
+db.getCollection('users').aggregate(
+    [  
+
+    {$addFields:{"birth_date":{"$add":[ {"$floor":{ "$multiply":[{"$rand":{}},10]}},
+                                        {"$floor":{ "$multiply":[{"$rand":{}},10]}},
+                                        1975]}}},
+    {$addFields:{ "subscribe_date": '$$NOW'}}
+    ]
+)

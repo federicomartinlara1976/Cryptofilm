@@ -1,0 +1,102 @@
+db.getCollection('users').insertMany(
+[
+{
+    name: "Charly" ,
+    surname: "Pita",
+    user: "charlypita",
+    mail: "charlypita@cice.com",
+    birth_date: "1980",
+},
+{
+    name: "Guillermo",
+    surname: "Castro",
+    user: "guillermocastro",
+    mail: "guillermocastro@cice.com",
+    birth_date: "1981",
+},
+{
+    name: "Sofía",
+    surname: "Colas",
+    user: "sofiacolas",
+    mail: "sofiacolas@cice.com",
+    birth_date: "1982",
+},
+{
+    name: "Jose Antonio",
+    surname: "González",
+    user: "joseantoniogonzalez",
+    mail: "joseantoniogonzalez@cice.com",
+    birth_date: "1983",
+},
+{
+    name: "Sergio",
+    surname: "Gualix",
+    user: "sergiogualix",
+    mail: "sergiogualix@cice.com",
+    birth_date: "1984",
+},
+{
+    name: "Alejandro",
+    surname: "León",
+    user: "alejandroleon",
+    mail: "alejandroleon@cice.com",
+    birth_date: "1985",
+},
+{
+    name: "Federico",
+    surname: "Martín",
+    user: "federicomartin",
+    mail: "federicomartin@cice.com",
+    birth_date: "1986",
+},
+{
+    name: "Carlos",
+    surname: "Membrilla",
+    user: "carlosmembrilla",
+    mail: "carlosmembrilla@cice.com",
+    birth_date: "1987",
+},
+{
+    name: "Daniel",
+    surname: "Pallarés",
+    user: "danielpallares",
+    mail: "danielpallares@cice.com",
+    birth_date: "1988",
+},
+{
+    name: "Rodrigo",
+    surname: "Paz",
+    user: "rodrigopaz",
+    mail: "rodrigopaz@cice.com",
+    birth_date: "1989",
+},
+{
+    name: "Alexander Edwin",
+    surname: "Rivero",
+    user: "alexanderedwinrivero",
+    mail: "alexanderedwinrivero@cice.com",
+    birth_date: "1990",
+},
+{
+    name: "Karell",
+    surname: "Rodríguez",
+    user: "karellrodriguez",
+    mail: "karellrodriguez@cice.com",
+    birth_date: "1991",
+},
+{
+    name: "Álvaro",
+    surname: "Sanz",
+    user: "alvarosanz",
+    mail: "alvarosanz@cice.com",
+    birth_date: "1992",
+},
+{
+    name: "Gonzalo",
+    surname: "Sanz",
+    user: "gonzalosanz",
+    mail: "gonzalosanz@cice.com",
+    birth_date: "1993",
+}
+]
+)
