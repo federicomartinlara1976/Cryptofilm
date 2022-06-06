@@ -1,0 +1,17 @@
+def arreglaVotos():
+
+
+    movies = db[collectionMovies].find({})
+
+    for m in movies:
+        print(m)
+
+        votes = m[votesField]
+        title = m[titleField]
+        
+        votes = int(votes.replace(',', ''))
+
+        output = db[collectionMovies].update_one({titleField: title}, {'$set': {votesField: votes}}) 
+
+        # Pintamos los documentos modificados
+        print('Documentos modificados: ' + str(output.modified_count))       
