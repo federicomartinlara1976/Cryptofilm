@@ -1,0 +1,6 @@
+[{"correo": "rodrigo@gmail.com","nombre": "Rodrigo","apellidos": "apellido1", "nacimiento": "2000-06-01", "postal": "28001"},
+{"correo": "raul@gmail.com","nombre": "Raul", "apellidos": "apellido1", "nacimiento": "2000-06-01", "postal": "16001"},
+{"correo": "pablo@gmail.com","nombre": "Pablo", "apellidos": "apellido1", "nacimiento": "2000-06-01", "postal": "16001"},
+{"correo": "benito@gmail.com","nombre": "Benito", "apellidos": "apellido1", "nacimiento": "2000-06-01", "postal": "42001"},
+{"correo": "hilario@gmail.com","nombre": "Hilario", "apellidos": "apellido1", "nacimiento": "2000-06-01", "postal": "30001"}
+]

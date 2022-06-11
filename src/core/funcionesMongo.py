@@ -1,16 +1,21 @@
 # Funciones
 from pymongo import MongoClient
 
-import cfg as cfg
+import cfg as c
 
 
 def getMongoClient():
-    return MongoClient(cfg.cfg['mongo.server'])
+    return MongoClient(c.cfg['mongo.server'])
 
 
 def getDb(client):
-    return client[cfg.cfg['mongo.database']]
+    return client[c.cfg['mongo.database']]
 
 
-def getCollection(db):
-    return db[cfg.cfg['mongo.collection']]
+def getCollection(db, cname):
+    return db[cname]
+
+
+def getDatabase():
+    client = getMongoClient()
+    return getDb(client)
