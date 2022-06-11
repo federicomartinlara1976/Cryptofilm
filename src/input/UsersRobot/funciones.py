@@ -127,7 +127,8 @@ def insertUsersFromKafka():
     collection = fm.getCollection(database)
 
     for message in consumer:
-        message = message.value
-        collection.insert_one(message)
+        user = message.value
+        collection.insert_one(user)
+        print("inserted: " + str(user))
 
 
