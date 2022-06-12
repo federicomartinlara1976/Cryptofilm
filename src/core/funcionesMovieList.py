@@ -37,3 +37,37 @@ def generateMovieList(db, user, movie):
     movielist[yearString] = movie[v.yearString]
 
     return movielist
+
+
+def generateMovieListView(view):
+    # Genero el movielist
+    movielist = {}
+    movielist[userString] = view[v.userString]
+    movielist[titleString] = view[v.titleString]
+    movielist[yearString] = view[v.yearString]
+
+    return movielist
+
+
+def deleteMovieList(db, movielist):
+    usermail = movielist[v.userString]
+    title = movielist[v.titleString]
+    year = movielist[v.yearString]
+
+    moviesonlist = db[v.collectionMoviesList].count_documents(
+        {v.userString: usermail, v.titleString: title, v.yearString: year})
+    if moviesonlist > 0:
+        resultado = db[v.collectionMoviesList].delete_one({v.userString: usermail, v.titleString: title, v.yearString: year})
+        deletedDocs = resultado.deleted_count
+        print(str(deletedDocs))
+        print("Delete done.")
+    else:
+        print("La pelicula  " + title + " no está en la lista de  " + usermail)
+
+
+def deleteMovieListForDeleteUser (db, user):
+
+    usermail = user[v.correoString]
+    resultado = db[v.collectionMoviesList].delete_many( {v.userString: { "$eq": usermail } } )
+    deletedDocs = resultado.deleted_count
+    print("User moviesList deleted: " + str(deletedDocs))

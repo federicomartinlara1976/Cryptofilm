@@ -4,9 +4,11 @@ from core import funcionesFilmin as ff
 from core import funcionesUser as fu
 from core import funcionesView as fv
 from core import funcionesFollow as fo
+from core import funcionesMovieList as fl
 from core import vars as v
 
 import json
+import csv
 
 # A cada procedimiento se le pasa promero el argumento db
 # para que se sepa que opera sobre una base de datos mongo
@@ -349,3 +351,79 @@ def generateMassiveFollows(db, nfollows):
     for i in range(nfollows):
         follow = fo.generateFollow(db, None, None)
         fo.insertFollow(db, follow)
+
+
+def generateMassiveMovieList(db, nmoviesonlist):
+    for i in range(nmoviesonlist):
+        movielist = fl.generateMovieList(db, None,None)
+        insertMovieList(db, movielist)
+
+
+def generateDeleteMovieList(db, user, movie):
+    movielist = fl.generateMovieList(db, None, None)
+    deleteMovieList(db, movielist)
+    user = fu.getSampleUser(db)
+    deleteMovieListForDeleteUser(db, user)
+
+
+def dumpToCsv(db, file):
+    with open(file, 'w', newline='', encoding='UTF-8') as outputCsv:
+        fieldnames = [v.titleString, v.ratingString, v.yearString, v.usersratingString, v.votesString, v.metascoreString, v.descriptionString, v.runtimeString,
+                      v.codirectorString, v.directorsString, v.cogenreString, v.genreString, v.mainactorString, v.secactorString, v.seclanguageString, v.voseString,
+                      v.countryString, v.seccountryString]
+        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
+
+        movieObjects = db[v.collectionMovies].find({})
+        # Recorremos el resultado
+        for movie in movieObjects:
+            title = movie[v.titleString]
+            rating = movie[v.ratingString]
+            year = movie[v.yearString]
+            users_rating = movie[v.usersratingString]
+            votes = movie[v.votesString]
+            metascore = movie[v.metascoreString]
+            description = movie[v.descriptionString]
+            runtime = movie[v.runtimeString]
+            codirector = movie[v.codirectorString]
+            director = movie[v.directorString]
+            cogenre = movie[v.cogenreString]
+            genre = movie[v.genreString]
+            mainactor = movie[v.mainactorString]
+            secactor = movie[v.secactorString]
+            seclanguage = movie[v.seclanguageString]
+            vose = movie[v.voseString]
+            country = movie[v.countryString]
+            seccountry = movie[v.seccountryString]
+
+            # Crear la variable line de tipo string y volcar todas las variables, separadas por comas.
+            line = ""
+
+            writer.writerow(line)
+
+    print("Fichero " +  file + " guardado")
+
+
+def filterJsonByVotes(inJson, outJson, votesLimit):
+    with open(inJson, encoding='utf-8') as inStream, \
+            open(outJson, 'w', newline='', encoding='UTF-8') as outStream:
+        data = json.load(inStream)
+
+        moviesFiltered = []
+
+        insertCount = 0
+        totalCount = 0
+
+        for i in range(0, len(data)):
+            movie = data[i]
+
+            votes = movie[v.votesString]
+
+            if votes is not None and int(getNumber(votes)) >= votesLimit:
+                moviesFiltered.append(movie)
+                insertCount += 1
+
+            totalCount += 1
+
+        json.dump(moviesFiltered, outStream, ensure_ascii=False, indent=2)
+
+    print("Json filtered successfully, " + str(insertCount) + "/" + str(totalCount) + " movies written.")
