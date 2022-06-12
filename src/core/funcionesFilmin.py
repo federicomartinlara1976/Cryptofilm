@@ -119,3 +119,13 @@ def arreglaVotos(db):
 
         # Pintamos los documentos modificados
         print('Documentos modificados: ' + str(output.modified_count))
+
+
+def insertMovieList (movielist):
+    #inserto el movielist
+    existe = db[v.collectionMoviesList].count_documents({userString: movielist[v.userString], titleString: movielist[v.titleString], yearString: movielist[v.yearString]})
+    ##para comprobar si existe ya el follow antes de insertar
+    if existe > 0:
+        print("La pelicla " + movielist[v.titleString] +" ya está en la lista de " + movielist[v.userString])
+    else:
+        db[v.collectionMoviesList].insert_one(movielist)

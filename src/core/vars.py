@@ -6,6 +6,7 @@ collectionUsers = "users"
 collectionViews = "views"
 collectionLikes = "likes"
 collectionFollows = "follows"
+collectionMoviesList = "movieslist"
 
 #films
 idString = "id"
