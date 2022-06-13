@@ -106,4 +106,4 @@ def toCSVLine(values):
     for value in values:
         line = line + value + ","
 
-    return line[-2]
+    return line[:-1]
