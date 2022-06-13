@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from core import utils as f
 from core import funcionesFilmin as ff
 from core import funcionesUser as fu
 from core import funcionesView as fv
@@ -376,27 +377,28 @@ def dumpToCsv(db, file):
         movieObjects = db[v.collectionMovies].find({})
         # Recorremos el resultado
         for movie in movieObjects:
-            title = movie[v.titleString]
-            rating = movie[v.ratingString]
-            year = movie[v.yearString]
-            users_rating = movie[v.usersratingString]
-            votes = movie[v.votesString]
-            metascore = movie[v.metascoreString]
-            description = movie[v.descriptionString]
-            runtime = movie[v.runtimeString]
-            codirector = movie[v.codirectorString]
-            director = movie[v.directorString]
-            cogenre = movie[v.cogenreString]
-            genre = movie[v.genreString]
-            mainactor = movie[v.mainactorString]
-            secactor = movie[v.secactorString]
-            seclanguage = movie[v.seclanguageString]
-            vose = movie[v.voseString]
-            country = movie[v.countryString]
-            seccountry = movie[v.seccountryString]
+            values = []
+            values.append(f.toString(f.getValue(movie, v.titleString)))
+            values.append(f.toString(f.getValue(movie, v.ratingString)))
+            values.append(f.toString(f.getValue(movie, v.yearString)))
+            values.append(f.toString(f.getValue(movie, v.usersratingString)))
+            values.append(f.toString(f.getValue(movie, v.votesString)))
+            values.append(f.toString(f.getValue(movie, v.metascoreString)))
+            values.append(f.toString(f.getValue(movie, v.descriptionString)))
+            values.append(f.toString(f.getValue(movie, v.runtimeString)))
+            values.append(f.toString(f.getValue(movie, v.codirectorString)))
+            values.append(f.toString(f.getValue(movie, v.directorString)))
+            values.append(f.toString(f.getValue(movie, v.cogenreString)))
+            values.append(f.toString(f.getValue(movie, v.genreString)))
+            values.append(f.toString(f.getValue(movie, v.mainactorString)))
+            values.append(f.toString(f.getValue(movie, v.secactorString)))
+            values.append(f.toString(f.getValue(movie, v.seclanguageString)))
+            values.append(f.toString(f.getValue(movie, v.voseString)))
+            values.append(f.toString(f.getValue(movie, v.countryString)))
+            values.append(f.toString(f.getValue(movie, v.seccountryString)))
 
             # Crear la variable line de tipo string y volcar todas las variables, separadas por comas.
-            line = ""
+            line = f.toCSVLine(values)
 
             writer.writerow(line)
 

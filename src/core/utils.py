@@ -84,3 +84,26 @@ def getCurrentTimestamp():
 
 def getRandomInt(min, max):
     return random.randint(min, max)
+
+
+def getValue(map, key):
+    try:
+        value = map[key]
+        return value
+    except KeyError:
+        return None
+
+
+def toString(value):
+    if value is None:
+        return ""
+    else:
+        return str(value)
+
+
+def toCSVLine(values):
+    line = ""
+    for value in values:
+        line = line + value + ","
+
+    return line[-2]
