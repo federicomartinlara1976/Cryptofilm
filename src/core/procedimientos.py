@@ -360,7 +360,7 @@ def generateMassiveMovieList(db, nmoviesonlist):
         insertMovieList(db, movielist)
 
 
-def generateDeleteMovieList(db, user, movie):
+def generateDeleteMovieList(db):
     movielist = fl.generateMovieList(db, None, None)
     deleteMovieList(db, movielist)
     user = fu.getSampleUser(db)
