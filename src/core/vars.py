@@ -9,7 +9,7 @@ collectionFollows = "follows"
 collectionMoviesList = "movieslist"
 
 #films
-idString = "id"
+idString = "_id"
 titleString = "title"
 ratingString = "rating"
 yearString = "year"
