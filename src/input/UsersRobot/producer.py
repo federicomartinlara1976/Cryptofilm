@@ -2,9 +2,11 @@
 
 import funcionesRobot as fr
 
+import json
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    users = 10
+    users = 100
 
     # Cargar los pandas
     pdNombresMasc = fr.loadPandaFrom("../../data/nombres_por_edad_media_hombres.csv", "Orden")
@@ -15,6 +17,8 @@ if __name__ == '__main__':
 
     # Unir pdApellidos01 y pdApellidos02
     pdApellidos = fr.concatFrames([pdApellidos01, pdApellidos02])
+
+    usuarios = []
 
     for u in range(users):
 
@@ -45,6 +49,11 @@ if __name__ == '__main__':
         email = fr.generateEmail([nombre, apellido_1, apellido_2], pdEmails)
 
         fechaNacimiento = fr.generarFechaNacimiento()
+        postal = fr.getPostalCode()
 
-        fr.createUser(nombre, apellido_1, apellido_2, fechaNacimiento, sexo, email)
+        usuario = fr.getUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email, postal)
+        usuarios.append(usuario)
+
+    with open("../../data/users.json", 'w', newline='', encoding='UTF-8') as outStream:
+        json.dump(usuarios, outStream, ensure_ascii=False, indent=2)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

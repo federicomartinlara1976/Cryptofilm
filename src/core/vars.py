@@ -42,6 +42,7 @@ apellidosString = "apellidos"
 correoString = "correo"
 nacimientoString = "nacimiento"
 postalString = "postal"
+sexoString = "sexo"
 
 #views
 completedString = "completed"

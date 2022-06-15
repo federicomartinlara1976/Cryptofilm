@@ -4,9 +4,8 @@ import random
 
 from calendar import isleap
 
-from core import funcionesKafka as fk
-from core import funcionesMongo as fm
 from core import cfg as c
+from core import vars as v
 
 
 def loadPandaFrom(file_csv, indexCol):
@@ -24,6 +23,22 @@ def getGenderMasc(limit, crit):
         return True
     else:
         return False
+
+
+def getPostalCode():
+    num = getRandomInt(0, 99999)
+    if num == 0:
+        return "00000"
+    elif num < 10:
+        return "0000" + str(num)
+    elif 10 <= num < 100:
+        return "000" + str(num)
+    elif 100 <= num < 1000:
+        return "00" + str(num)
+    elif 1000 <= num < 10000:
+        return "0" + str(num)
+    else:
+        return str(num)
 
 
 def getSampleFromDataframe(dataframe):
@@ -102,32 +117,15 @@ def diasMes(mes, anio):
             return 28
 
 
-def createUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email):
+def getUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email, postal):
     usuario = {}
-    usuario['nombre'] = nombre
-    usuario['apellidos'] = apellido_1 + ' ' + apellido_2
-    usuario['sexo'] = sexo
-    usuario['fechaNacimiento'] = fechaNacimiento
-    usuario['email'] = email
+    usuario[v.nombreString] = nombre
+    usuario[v.apellidosString] = apellido_1 + ' ' + apellido_2
+    usuario[v.sexoString] = sexo
+    usuario[v.nacimientoString] = fechaNacimiento
+    usuario[v.correoString] = email
+    usuario[v.postalString] = postal
 
-    # Iniciar Kafka
-    producer = fk.getKafkaProducer()
-
-    # Enviarlo a Kafka
-    fk.sendToKafka(producer, usuario)
-    print("Enviado: " + str(usuario))
-
-
-def insertUsersFromKafka():
-    # Iniciar Kafka
-    consumer = fk.getKafkaConsumer()
-
-    # Iniciar mongo
-    db = fm.getDatabase()
-    collection = fm.getCollection(db, c.cfg['mongo.collection'])
-
-    for message in consumer:
-        message = message.value
-        collection.insert_one(message)
+    return usuario
 
 
