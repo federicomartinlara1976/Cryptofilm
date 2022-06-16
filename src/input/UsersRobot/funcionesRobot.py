@@ -86,19 +86,19 @@ def generarFechaNacimiento():
 
     sYear = str(year)
 
-    sMes = ""
+    sMes = v.emptyString
     if mes > 9:
         sMes = str(mes)
     else:
         sMes = "0" + str(mes)
 
-    sDia = ""
+    sDia = v.emptyString
     if dia > 9:
         sDia = str(dia)
     else:
         sDia = "0" + str(dia)
 
-    return sDia + "-" + sMes + "-" + sYear
+    return sYear + "-" + sMes + "-" + sDia
 
 
 def concatFrames(frames):
@@ -106,9 +106,9 @@ def concatFrames(frames):
 
 
 def diasMes(mes, anio):
-    if mes == 1 or mes == 3 or mes == 5 or mes == 7 or mes == 8 or mes == 10 or mes == 12:
+    if mes in [1, 3, 5, 7, 8, 10, 12]:
         return 31
-    elif mes == 4 or mes == 6 or mes == 9 or mes == 11:
+    elif mes in [4, 6, 9, 11]:
         return 30
     else:
         if isleap(anio):
