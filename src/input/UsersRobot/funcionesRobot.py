@@ -129,3 +129,43 @@ def getUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email, postal
     return usuario
 
 
+def generateUsers(nusers, nombresMasc, nombresFem, apellidos, emails):
+    usuarios = []
+
+    for u in range(nusers):
+
+        pdNombre = None
+        sexo = v.emptyString
+
+        # Coger un género y decidir el panda de los nombres según el género
+        esMasc = getGenderMasc(100, 50)
+        if esMasc:
+            sexo = "hombre"
+            pdNombre = nombresMasc
+        else:
+            sexo = "mujer"
+            pdNombre = nombresFem
+
+        # Coger un nombre
+        rNombre = getSampleFromDataframe(pdNombre)
+        nombre = getDataString(rNombre["Nombre"])
+
+        # Coger dos apellidos
+        dfApellido_1 = getSampleFromDataframe(apellidos)
+        apellido_1 = getDataString(dfApellido_1["Apellido"])
+
+        dfApellido_2 = getSampleFromDataframe(pdApellidos)
+        apellido_2 = getDataString(dfApellido_2["Apellido"])
+
+        # Generar el email
+        email = generateEmail([nombre, apellido_1, apellido_2], emails)
+
+        fechaNacimiento = generarFechaNacimiento()
+        postal = fr.getPostalCode()
+
+        usuario = getUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email, postal)
+        usuarios.append(usuario)
+
+        return usuarios
+
+
