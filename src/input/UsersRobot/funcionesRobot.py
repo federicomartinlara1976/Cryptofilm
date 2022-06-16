@@ -154,18 +154,18 @@ def generateUsers(nusers, nombresMasc, nombresFem, apellidos, emails):
         dfApellido_1 = getSampleFromDataframe(apellidos)
         apellido_1 = getDataString(dfApellido_1["Apellido"])
 
-        dfApellido_2 = getSampleFromDataframe(pdApellidos)
+        dfApellido_2 = getSampleFromDataframe(apellidos)
         apellido_2 = getDataString(dfApellido_2["Apellido"])
 
         # Generar el email
         email = generateEmail([nombre, apellido_1, apellido_2], emails)
 
         fechaNacimiento = generarFechaNacimiento()
-        postal = fr.getPostalCode()
+        postal = getPostalCode()
 
         usuario = getUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email, postal)
         usuarios.append(usuario)
 
-        return usuarios
+    return usuarios
 
 
