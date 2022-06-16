@@ -6,18 +6,15 @@ from calendar import isleap
 
 from core import cfg as c
 from core import vars as v
+from core import utils as f
 
 
 def loadPandaFrom(file_csv, indexCol):
     return pd.read_csv(file_csv, index_col=indexCol)
 
 
-def getRandomInt(min, max):
-    return random.randint(min, max)
-
-
 def getGenderMasc(limit, crit):
-    val = getRandomInt(1, limit)
+    val = f.getRandomInt(1, limit)
 
     if val > crit:
         return True
@@ -25,20 +22,23 @@ def getGenderMasc(limit, crit):
         return False
 
 
-def getPostalCode():
-    num = getRandomInt(0, 99999)
+def generatePostalCode():
+    format = v.emptyString
+    num = f.getRandomInt(0, 99999)
     if num == 0:
-        return "00000"
+        format = '00000'
     elif num < 10:
-        return "0000" + str(num)
+        format = '0000{num}'
     elif 10 <= num < 100:
-        return "000" + str(num)
+        format = '000{num}'
     elif 100 <= num < 1000:
-        return "00" + str(num)
+        format = '00{num}'
     elif 1000 <= num < 10000:
-        return "0" + str(num)
+        format = '0{num}'
     else:
-        return str(num)
+        format = '{num}'
+
+    return format.format(num=str(num))
 
 
 def getSampleFromDataframe(dataframe):
@@ -64,10 +64,10 @@ def generateEmail(lista, pdEmails):
     email = token_1 + token_2 + token_3
 
     # Escoger números aleatorios (0-9), n veces (1 < n < 6)
-    limit = getRandomInt(1, 6)
-    numbers = ""
+    limit = f.getRandomInt(1, 6)
+    numbers = v.emptyString
     for i in range(limit):
-        numbers += str(getRandomInt(0, 9))
+        numbers += str(f.getRandomInt(0, 9))
 
     # Concatenar el mail para tener la cuenta
     dfEmail = getSampleFromDataframe(pdEmails)
@@ -76,13 +76,13 @@ def generateEmail(lista, pdEmails):
     return email + numbers + '@' + domain
 
 
-def generarFechaNacimiento():
+def generateFechaNacimiento():
     minYear = 1930
     maxYear = 2010
 
-    year = getRandomInt(minYear, maxYear)
-    mes = getRandomInt(1, 12)
-    dia = getRandomInt(1, diasMes(mes, year))
+    year = f.getRandomInt(minYear, maxYear)
+    mes = f.getRandomInt(1, 12)
+    dia = f.getRandomInt(1, diasMes(mes, year))
 
     sYear = str(year)
 
@@ -117,7 +117,7 @@ def diasMes(mes, anio):
             return 28
 
 
-def getUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email, postal):
+def generateUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email, postal):
     usuario = {}
     usuario[v.nombreString] = nombre
     usuario[v.apellidosString] = apellido_1 + ' ' + apellido_2
@@ -160,10 +160,10 @@ def generateUsers(nusers, nombresMasc, nombresFem, apellidos, emails):
         # Generar el email
         email = generateEmail([nombre, apellido_1, apellido_2], emails)
 
-        fechaNacimiento = generarFechaNacimiento()
-        postal = getPostalCode()
+        fechaNacimiento = generateFechaNacimiento()
+        postal = generatePostalCode()
 
-        usuario = getUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email, postal)
+        usuario = generateUser(nombre, apellido_1, apellido_2, sexo, fechaNacimiento, email, postal)
         usuarios.append(usuario)
 
     return usuarios
