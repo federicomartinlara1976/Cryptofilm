@@ -9,7 +9,7 @@ collectionFollows = "follows"
 collectionMoviesList = "movieslist"
 
 #films
-idString = "_id"
+idString = "id"
 titleString = "title"
 ratingString = "rating"
 yearString = "year"
@@ -42,7 +42,6 @@ apellidosString = "apellidos"
 correoString = "correo"
 nacimientoString = "nacimiento"
 postalString = "postal"
-sexoString = "sexo"
 
 #views
 completedString = "completed"

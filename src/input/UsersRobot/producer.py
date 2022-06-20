@@ -2,11 +2,9 @@
 
 import funcionesRobot as fr
 
-import json
-
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    nusers = 100
+    users = 10
 
     # Cargar los pandas
     pdNombresMasc = fr.loadPandaFrom("../../data/nombres_por_edad_media_hombres.csv", "Orden")
@@ -18,8 +16,35 @@ if __name__ == '__main__':
     # Unir pdApellidos01 y pdApellidos02
     pdApellidos = fr.concatFrames([pdApellidos01, pdApellidos02])
 
-    usuarios = fr.generateUsers(nusers, pdNombresMasc, pdNombresFem, pdApellidos, pdEmails)
+    for u in range(users):
 
-    with open("../../data/users.json", 'w', newline='', encoding='UTF-8') as outStream:
-        json.dump(usuarios, outStream, ensure_ascii=False, indent=2)
+        pdNombre = None
+        sexo = ""
+
+        # Coger un género y decidir el panda de los nombres según el género
+        esMasc = fr.getGenderMasc(100, 50)
+        if esMasc:
+            sexo = "hombre"
+            pdNombre = pdNombresMasc
+        else:
+            sexo = "mujer"
+            pdNombre = pdNombresFem
+
+        # Coger un nombre
+        rNombre = fr.getSampleFromDataframe(pdNombre)
+        nombre = fr.getDataString(rNombre["Nombre"])
+
+        # Coger dos apellidos
+        dfApellido_1 = fr.getSampleFromDataframe(pdApellidos)
+        apellido_1 = fr.getDataString(dfApellido_1["Apellido"])
+
+        dfApellido_2 = fr.getSampleFromDataframe(pdApellidos)
+        apellido_2 = fr.getDataString(dfApellido_2["Apellido"])
+
+        # Generar el email
+        email = fr.generateEmail([nombre, apellido_1, apellido_2], pdEmails)
+
+        fechaNacimiento = fr.generarFechaNacimiento()
+
+        fr.createUser(nombre, apellido_1, apellido_2, fechaNacimiento, sexo, email)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

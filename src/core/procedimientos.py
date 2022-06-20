@@ -360,7 +360,7 @@ def generateMassiveMovieList(db, nmoviesonlist):
         insertMovieList(db, movielist)
 
 
-def generateDeleteMovieList(db):
+def generateDeleteMovieList(db, user, movie):
     movielist = fl.generateMovieList(db, None, None)
     deleteMovieList(db, movielist)
     user = fu.getSampleUser(db)
@@ -403,99 +403,6 @@ def dumpToCsv(db, file):
             writer.writerow(line)
 
     print("Fichero " +  file + " guardado")
-
-
-def dumpToCsvFilms(db, filename):
-    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = [v.idString, v.titleString, v.ratingString, v.yearString, v.usersratingString, v.votesString,
-                      v.metascoreString, v.descriptionString, v.runtimeString, v.codirectorString, v.directorString,
-                      v.cogenreString, v.genreString, v.mainactorString, v.secactorString, v.seclanguageString,
-                      v.voseString, v.countryString, v.seccountryString]
-
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
-
-        movieObjects = db[v.collectionMovies].find({})
-        # Recorremos el resultado
-        count = 0
-        for movie in movieObjects:
-            print(str(count) + ": " + str(movie[v.titleString]))
-            writer.writerow(movie)
-            count = count + 1
-
-    print("Fichero guardado")
-
-
-def dumpToCsvUsers(db, filename):
-    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = [v.idString, v.nombreString, v.apellidosString, v.correoString,
-                      v.nacimientoString, v.postalString]
-
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
-
-        userObjects = db[v.collectionUsers].find({})
-        # Recorremos el resultado
-        count = 0
-        for user in userObjects:
-            print(str(count) + ": " + str(user[v.correoString]))
-            writer.writerow(user)
-            count = count + 1
-    print("Fichero guardado")
-
-
-def dumpToCsvViews(db, filename):
-    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = [v.idString, v.userString, v.titleString, v.yearString, v.timestampString,
-                      v.completedString, v.viewingtimeString, v.scoreString]
-
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
-
-        viewObjects = db[v.collectionViews].find({})
-        # Recorremos el resultado
-        count = 0
-        for view in viewObjects:
-            print(str(count) + ": pelicula " + str(view[v.titleString]) + " del usuario " + str(view[v.userString]))
-            writer.writerow(view)
-            count = count + 1
-
-    print("Fichero guardado")
-
-
-def dumpToCsvLikes(db, filename):
-    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = [v.idString, v.userString, v.titleString, v.yearString]
-
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
-
-        likeObjects = db[v.collectionLikes].find({})
-        # Recorremos el resultado
-        count = 0
-        for like in likeObjects:
-            print(str(count) + " Usuario " + str(like[v.userString]) + " like pelicula " + str(like[v.titleString]))
-            writer.writerow(like)
-            count = count + 1
-
-    print("Fichero guardado")
-
-
-def dumpToCsvFollows(db, filename):
-    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = [v.idString, v.userString, v.followString]
-
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
-
-        followObjects = db[v.collectionFollows].find({})
-        # Recorremos el resultado
-        count = 0
-        for follow in followObjects:
-            print(str(count) + " Usuario " + str(follow[v.userString]) + " sigue a " + str(follow[v.followString]))
-            writer.writerow(follow)
-            count = count + 1
-    print("Fichero guardado")
 
 
 def filterJsonByVotes(inJson, outJson, votesLimit):

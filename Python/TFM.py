@@ -115,28 +115,6 @@ usersratingString = "users_rating"
 userString = "user"
 followString = "follow"
 
-def getValue(map, key):
-    try:
-        value = map[key]
-        return value
-    except KeyError:
-        return None
-
-
-def toString(value):
-    if value is None:
-        return ""
-    else:
-        return str(value)
-
-
-def toCSVLine(values):
-    line = ""
-    for value in values:
-        line = line + value + ","
-
-    return line[:-1]
-
 
 # In[ ]:
 
@@ -627,115 +605,76 @@ generateDeleteMovieList(None, None)
 # In[ ]:
 
 
-def dumpToCsvFilms():
-    with open('C:/Users/cmemb/MoviesClean.csv', 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = ['_id', 'title', 'rating', 'year', 'users_rating', 'votes', 'metascore', 'description', 'runtime', 'codirector', 'director', 'cogenre', 'genre', 'mainactor', 'secactor', 'seclanguage', 'vose', 'country', 'seccountry']
+with open('C:/Users/cmemb/MoviesClean.csv', 'w', newline='', encoding='UTF-8') as outputCsv:
+    fieldnames = ['title', 'rating', 'year', 'users_rating', 'votes', 'metascore', 'description', 'runtime', 'codirector', 'director', 'cogenre', 'genre', 'mainactor', 'secactor', 'seclanguage', 'vose', 'country', 'seccountry']
+    writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
     
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
+    movieObjects = db[collectionMovies].find({})
+    # Recorremos el resultado
+    for movie in movieObjects:   
+    
+        title = movie[titleString]
+        rating = movie[ratingString]
+        year = movie[yearString]
+        users_rating = movie[usersratingString]
+        votes = movie[votesString]
+        metascore = movie[metascoreString]
+        description = movie[descriptionString]
+        runtime = movie[runtimeString]
+        codirector = movie[codirectorString]
+        director = movie[directorString]
+        cogenre = movie[cogenreString]
+        genre = movie[genreString]
+        mainactor = movie[mainactorString]
+        secactor = movie[secactorString]
+        seclanguage = movie[seclanguageString]
+        vose = movie[voseString]
+        country = movie[countryString]
+        seccountry = movie[seccountryString]
         
-        movieObjects = db[collectionMovies].find({})
-        # Recorremos el resultado 
-        count = 0
-        for movie in movieObjects:
-            print(str(count)+": "+str(movie[titleString]))
-            writer.writerow(movie)
-            count=count+1
-    print("Fichero guardado")
-
-dumpToCsvFilms()
+    writer.writerow(line)
+        
+print("Fichero guardado")
 
 
 # In[ ]:
 
 
-def dumpToCsvUsers():
-    with open('C:/Users/cmemb/usersClean.csv', 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = ['_id', 'nombre', 'apellidos', 'correo', 'nacimiento', 'postal']
+with open('C:/Users/cmemb/OneDrive/BIG DATA/Ejercicios/3 Python/movies.json', encoding='utf-8') as inStream, open('C:/Users/cmemb/OneDrive/BIG DATA/Ejercicios/3 Python/moviesFiltered.json', 'w', newline='', encoding='UTF-8') as outStream:
+    data = json.load(inStream)
     
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
-        
-        userObjects = db[collectionUsers].find({})
-        # Recorremos el resultado 
-        count = 0
-        for user in userObjects:
-            print(str(count)+": "+str(user[correoString]))
-            writer.writerow(user)
-            count=count+1
-    print("Fichero guardado")
-
-dumpToCsvUsers()
-
-
-# In[ ]:
-
-
-def dumpToCsvViews():
-    with open('C:/Users/cmemb/viewsClean.csv', 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = ['_id', 'user', 'title', 'year', 'timestamp', 'completed', 'viewingtime', 'score']
+    titleString = "title"
+    votesString = "votes"
+    ratingUsersStringIn = "users_rating"
+    ratingUsersString = "ratingUsers"    
+    ratingCriticsStringIn = "metascore"
+    ratingCriticsString = "ratingCritics"   
     
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
-        
-        viewObjects = db[collectionViews].find({})
-        # Recorremos el resultado 
-        count = 0
-        for view in viewObjects:
-            print(str(count)+": pelicula "+str(view[titleString])+" del usuario "+str(view[userString]))
-            writer.writerow(view)
-            count=count+1
-    print("Fichero guardado")
-
-dumpToCsvViews()
-
-
-# In[ ]:
-
-
-def dumpToCsvLikes():
-    with open('C:/Users/cmemb/likesClean.csv', 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = ['_id', 'user', 'title', 'year']
+    movies = []    
+    movie = {}
     
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
-        
-        likeObjects = db[collectionLikes].find({})
-        # Recorremos el resultado 
-        count = 0
-        for like in likeObjects:
-            print(str(count)+" Usuario "+str(like[userString])+" like pelicula "+str(like[titleString]))
-            writer.writerow(like)
-            count=count+1
-    print("Fichero guardado")
-
-dumpToCsvLikes()
-
-
-# In[ ]:
-
-
-def dumpToCsvFollows():
-    with open('C:/Users/cmemb/followsClean.csv', 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = ['_id', 'user', 'follow']
+    insertCount = 0
+    totalCount = 0
     
-        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
-        writer.writeheader()
+    dataLen = len(data)
+    for i in range(0, dataLen):
+        movie = data[i]
         
-        followObjects = db[collectionFollows].find({})
-        # Recorremos el resultado 
-        count = 0
-        for follow in followObjects:
-            print(str(count)+" Usuario "+str(follow[userString])+" sigue a "+str(follow[userString]))
-            writer.writerow(follow)
-            count=count+1
-    print("Fichero guardado")
-
-dumpToCsvFollows()
-
-
-# In[ ]:
-
-
-
+        title = movie[titleString]
+        votes = movie[votesString]
+        
+        if votes != None and int(getNumber(votes)) >= votesLimit:
+            movie[ratingCriticsString] = movie[ratingCriticsStringIn]
+            movie[ratingUsersString] = movie[ratingUsersStringIn]
+            movie.pop(ratingUsersStringIn)
+            movie.pop(ratingCriticsStringIn)
+            movies.append(movie)
+            
+            insertCount += 1
+            
+        totalCount +=1
+    
+    json.dump(movies, outStream, ensure_ascii=False, indent=2)
+    
+print("Json filtered successfully, " + str(insertCount) + "/" + str(totalCount) + " movies written.")
 
