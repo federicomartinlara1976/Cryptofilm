@@ -4,7 +4,7 @@ from json import loads
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
 
-import cfg as c
+from core import cfg as c
 
 
 def getKafkaProducer():
@@ -14,7 +14,7 @@ def getKafkaProducer():
 
 
 def getKafkaConsumer():
-    return KafkaConsumer(cfg.cfg['kafka.topic'],
+    return KafkaConsumer(c.cfg['kafka.topic'],
                          bootstrap_servers=[c.cfg['kafka.server']],
                          auto_offset_reset='earliest',
                          enable_auto_commit=True,

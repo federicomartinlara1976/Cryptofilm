@@ -1,10 +1,10 @@
-import funcionesUser as fu
-import funcionesFilmin as fm
-import vars as v
+from core import funcionesUser as fu
+from core import funcionesFilmin as fm
+from core import vars as v
 
 def insertMovieList (db, movielist):
     #inserto el movielist
-    existe = db[v.collectionMoviesList].count_documents({userString: movielist[v.userString], titleString: movielist[v.titleString], yearString: movielist[v.yearString]})
+    existe = db[v.collectionMoviesList].count_documents({v.userString: movielist[v.userString], v.titleString: movielist[v.titleString], v.yearString: movielist[v.yearString]})
     ##para comprobar si existe ya el follow antes de insertar
     if existe > 0:
         print("La pelicula " + movielist[v.titleString] +" ya está en la lista de " + movielist[v.userString])
@@ -15,11 +15,11 @@ def insertMovieList (db, movielist):
 def generateMovieList(db, user, movie):
     if user is None:
         user = fu.getSampleUser(db)
-        usermail = user.get(correoString)
+        usermail = user.get(v.correoString)
         print("user " + usermail)
     else:
         userObject = user
-        usermail = userObject.get(correoString)
+        usermail = userObject.get(v.correoString)
         print("user " + str(usermail))
 
     if movie is None:
@@ -32,9 +32,9 @@ def generateMovieList(db, user, movie):
 
     # Genero el movielist
     movielist = {}
-    movielist[userString] = user[v.correoString]
-    movielist[titleString] = movie[v.titleString]
-    movielist[yearString] = movie[v.yearString]
+    movielist[v.userString] = user[v.correoString]
+    movielist[v.titleString] = movie[v.titleString]
+    movielist[v.yearString] = movie[v.yearString]
 
     return movielist
 
@@ -42,9 +42,9 @@ def generateMovieList(db, user, movie):
 def generateMovieListView(view):
     # Genero el movielist
     movielist = {}
-    movielist[userString] = view[v.userString]
-    movielist[titleString] = view[v.titleString]
-    movielist[yearString] = view[v.yearString]
+    movielist[v.userString] = view[v.userString]
+    movielist[v.titleString] = view[v.titleString]
+    movielist[v.yearString] = view[v.yearString]
 
     return movielist
 

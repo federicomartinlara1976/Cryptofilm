@@ -1,5 +1,5 @@
 cfg = {
-    'root': '/home/federico/git/Cryptofilm/src',
+    'root': 'C:/Users/cmemb/Desktop/src',
     'mongo.server': 'localhost:27017',
     'mongo.database': 'db',
     'mongo.collection': 'usersFilmin',

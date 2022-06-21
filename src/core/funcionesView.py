@@ -1,17 +1,19 @@
-import vars as v
-import utils as f
-import funcionesUser as fu
-import funcionesFilmin as ff
-import funcionesLike as fl
+from core import vars as v
+from core import utils as f
+from core import funcionesUser as fu
+from core import funcionesFilmin as ff
+from core import funcionesLike as fl
+from core import funcionesMovieList as fm
+
 
 
 def generateView(db, user):
     if user is None:
-        userObject = fu.getSampleUser()
+        userObject = fu.getSampleUser(db)
     else:
         userObject = user
 
-    movieObject = ff.getSampleMovie()
+    movieObject = ff.getSampleMovie(db)
     # print(str(movieObject))
 
     # Recogemos los datos de la película
@@ -49,7 +51,9 @@ def insertView(db, view):
     score = view.get(v.scoreString)
 
     if score :
-        ff.updateRatingFilm(view)
+        movielist = fm.generateMovieListView(view)
+        fm.deleteMovieList(movielist)
+        ff.updateRatingFilm(db,view)
         if score >= 7:
             like = fl.generateLike(view)
             db[v.collectionLikes].insert_one(like)

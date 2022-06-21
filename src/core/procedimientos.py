@@ -7,11 +7,12 @@ from core import funcionesView as fv
 from core import funcionesFollow as fo
 from core import funcionesMovieList as fl
 from core import vars as v
+from core import funcionesMongo as fm
 
 import json
 import csv
 
-# A cada procedimiento se le pasa promero el argumento db
+# A cada procedimiento se le pasa primero el argumento db
 # para que se sepa que opera sobre una base de datos mongo
 
 
@@ -286,6 +287,7 @@ def insertUsers(db, file):
         dataLen = len(data)
         for i in range(0, dataLen):
             readUser = data[i]
+            writedUser = {}
 
             writedUser[v.nombreString] = readUser[v.nombreString]
             writedUser[v.apellidosString] = readUser[v.apellidosString]
@@ -303,9 +305,15 @@ def insertUsers(db, file):
             totalCount += 1
 
             if fu.validateUser(writedUser):
-                db[v.collectionUsers].insert_one(writedUser)
-                print("Insertada " + writedUser[v.correoString] + " " + str(insertCount))
-                insertCount += 1
+                existe = db[v.collectionUsers].count_documents(
+                    {v.correoString: writedUser[v.correoString]})
+                ##para comprobar si existe ya el usuario antes de insertar
+                if existe > 0:
+                    print("El usuario " + writedUser[v.correoString] + " ya está en la lista ")
+                else:
+                    db[v.collectionUsers].insert_one(writedUser)
+                    print("Insertada " + writedUser[v.correoString] + " " + str(insertCount))
+                    insertCount += 1
             else:
                 print("No Insertada " + writedUser[v.correoString])
 
@@ -344,7 +352,7 @@ def idiomaypais(db):
 
 def generateMassiveViews(db, nviews):
     for i in range(nviews):
-        view = fv.generateView(None)
+        view = fv.generateView(db,None)
         fv.insertView(db, view)
 
 
@@ -357,75 +365,132 @@ def generateMassiveFollows(db, nfollows):
 def generateMassiveMovieList(db, nmoviesonlist):
     for i in range(nmoviesonlist):
         movielist = fl.generateMovieList(db, None,None)
-        insertMovieList(db, movielist)
+        fl.insertMovieList(db, movielist)
 
 
-def generateDeleteMovieList(db, user, movie):
+def generateDeleteMovieList(db):
     movielist = fl.generateMovieList(db, None, None)
-    deleteMovieList(db, movielist)
+    fl.deleteMovieList(db, movielist)
     user = fu.getSampleUser(db)
-    deleteMovieListForDeleteUser(db, user)
+    fl.deleteMovieListForDeleteUser(db, user)
 
 
-def dumpToCsv(db, file):
-    with open(file, 'w', newline='', encoding='UTF-8') as outputCsv:
-        fieldnames = [v.titleString, v.ratingString, v.yearString, v.usersratingString, v.votesString, v.metascoreString, v.descriptionString, v.runtimeString,
-                      v.codirectorString, v.directorsString, v.cogenreString, v.genreString, v.mainactorString, v.secactorString, v.seclanguageString, v.voseString,
-                      v.countryString, v.seccountryString]
+def dumpToCsvFilms(db, filename):
+    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
+        fieldnames = [v.idString, v.titleString, v.ratingString, v.yearString, v.usersratingString, v.votesString,
+                      v.metascoreString, v.descriptionString, v.runtimeString, v.codirectorString, v.directorString,
+                      v.cogenreString, v.genreString, v.mainactorString, v.secactorString, v.seclanguageString,
+                      v.voseString, v.countryString, v.seccountryString]
+
         writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
+        writer.writeheader()
 
         movieObjects = db[v.collectionMovies].find({})
         # Recorremos el resultado
+        count = 0
         for movie in movieObjects:
-            values = []
-            values.append(f.toString(f.getValue(movie, v.titleString)))
-            values.append(f.toString(f.getValue(movie, v.ratingString)))
-            values.append(f.toString(f.getValue(movie, v.yearString)))
-            values.append(f.toString(f.getValue(movie, v.usersratingString)))
-            values.append(f.toString(f.getValue(movie, v.votesString)))
-            values.append(f.toString(f.getValue(movie, v.metascoreString)))
-            values.append(f.toString(f.getValue(movie, v.descriptionString)))
-            values.append(f.toString(f.getValue(movie, v.runtimeString)))
-            values.append(f.toString(f.getValue(movie, v.codirectorString)))
-            values.append(f.toString(f.getValue(movie, v.directorString)))
-            values.append(f.toString(f.getValue(movie, v.cogenreString)))
-            values.append(f.toString(f.getValue(movie, v.genreString)))
-            values.append(f.toString(f.getValue(movie, v.mainactorString)))
-            values.append(f.toString(f.getValue(movie, v.secactorString)))
-            values.append(f.toString(f.getValue(movie, v.seclanguageString)))
-            values.append(f.toString(f.getValue(movie, v.voseString)))
-            values.append(f.toString(f.getValue(movie, v.countryString)))
-            values.append(f.toString(f.getValue(movie, v.seccountryString)))
+            print(str(count) + ": " + str(movie[v.titleString]))
+            writer.writerow(movie)
+            count = count + 1
 
-            # Crear la variable line de tipo string y volcar todas las variables, separadas por comas.
-            line = f.toCSVLine(values)
-
-            writer.writerow(line)
-
-    print("Fichero " +  file + " guardado")
+    print("Fichero guardado")
 
 
-def filterJsonByVotes(inJson, outJson, votesLimit):
-    with open(inJson, encoding='utf-8') as inStream, \
-            open(outJson, 'w', newline='', encoding='UTF-8') as outStream:
-        data = json.load(inStream)
+def dumpToCsvUsers(db, filename):
+    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
+        fieldnames = [v.idString, v.nombreString, v.apellidosString, v.correoString,
+                      v.nacimientoString, v.postalString]
 
-        moviesFiltered = []
+        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
+        writer.writeheader()
 
-        insertCount = 0
-        totalCount = 0
+        userObjects = db[v.collectionUsers].find({})
+        # Recorremos el resultado
+        count = 0
+        for user in userObjects:
+            print(str(count) + ": " + str(user[v.correoString]))
+            writer.writerow(user)
+            count = count + 1
+    print("Fichero guardado")
 
-        for i in range(0, len(data)):
-            movie = data[i]
 
-            votes = movie[v.votesString]
+def dumpToCsvViews(db, filename):
+    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
+        fieldnames = [v.idString, v.userString, v.titleString, v.yearString, v.timestampString,
+                      v.completedString, v.viewingtimeString, v.scoreString]
 
-            if votes is not None and int(getNumber(votes)) >= votesLimit:
-                moviesFiltered.append(movie)
-                insertCount += 1
+        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
+        writer.writeheader()
 
-            totalCount += 1
+        viewObjects = db[v.collectionViews].find({})
+        # Recorremos el resultado
+        count = 0
+        for view in viewObjects:
+            print(str(count) + ": pelicula " + str(view[v.titleString]) + " del usuario " + str(view[v.userString]))
+            writer.writerow(view)
+            count = count + 1
 
-        json.dump(moviesFiltered, outStream, ensure_ascii=False, indent=2)
+    print("Fichero guardado")
 
-    print("Json filtered successfully, " + str(insertCount) + "/" + str(totalCount) + " movies written.")
+
+def dumpToCsvLikes(db, filename):
+    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
+        fieldnames = [v.idString, v.userString, v.titleString, v.yearString]
+
+        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
+        writer.writeheader()
+
+        likeObjects = db[v.collectionLikes].find({})
+        # Recorremos el resultado
+        count = 0
+        for like in likeObjects:
+            print(str(count) + " Usuario " + str(like[v.userString]) + " like pelicula " + str(like[v.titleString]))
+            writer.writerow(like)
+            count = count + 1
+
+    print("Fichero guardado")
+
+
+def dumpToCsvFollows(db, filename):
+    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
+        fieldnames = [v.idString, v.userString, v.followString]
+
+        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
+        writer.writeheader()
+
+        followObjects = db[v.collectionFollows].find({})
+        # Recorremos el resultado
+        count = 0
+        for follow in followObjects:
+            print(str(count) + " Usuario " + str(follow[v.userString]) + " sigue a " + str(follow[v.followString]))
+            writer.writerow(follow)
+            count = count + 1
+    print("Fichero guardado")
+
+
+def dumpToCsvMoviesList(db, filename):
+    with open(filename, 'w', newline='', encoding='UTF-8') as outputCsv:
+        fieldnames = ['_id', 'user', 'title', 'year']
+
+        writer = csv.DictWriter(outputCsv, fieldnames=fieldnames)
+        writer.writeheader()
+
+        movieListObjects = db[v.collectionMoviesList].find({})
+        # Recorremos el resultado
+        count = 0
+        for movieList in movieListObjects:
+            print(str(count) + " MovieList del usuario " + str(movieList[v.userString]) + " sigue a " + str(
+                movieList[v.titleString]))
+            writer.writerow(movieList)
+            count = count + 1
+    print("Fichero guardado")
+
+db = fm.getDatabase()
+#generateMassiveViews(db, 500)
+#generateMassiveFollows(db, 50)
+#generateMassiveMovieList(db, 100)
+dumpToCsvLikes(db, 'C:/Users/cmemb/likesClean.csv')
+dumpToCsvFollows(db, 'C:/Users/cmemb/followsClean.csv')
+dumpToCsvViews(db, 'C:/Users/cmemb/viewsClean.csv')
+dumpToCsvUsers(db, 'C:/Users/cmemb/usersClean.csv')
+dumpToCsvMoviesList(db, 'C:/Users/cmemb/moviesListClean.csv')

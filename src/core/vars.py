@@ -9,7 +9,7 @@ collectionFollows = "follows"
 collectionMoviesList = "movieslist"
 
 #films
-idString = "id"
+idString = "_id"
 titleString = "title"
 ratingString = "rating"
 yearString = "year"
@@ -33,7 +33,7 @@ voseString = "vose"
 seclanguageString = "seclanguage"
 countryString = "country"
 seccountryString = "seccountry"
-emptyString = ""
+emptyString = "''"
 
 #users
 
@@ -42,6 +42,7 @@ apellidosString = "apellidos"
 correoString = "correo"
 nacimientoString = "nacimiento"
 postalString = "postal"
+sexoString = "sexo"
 
 #views
 completedString = "completed"

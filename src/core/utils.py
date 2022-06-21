@@ -3,10 +3,12 @@ import random
 import time
 import calendar
 
+from core import vars as v
+
 
 # Funciones que nos van a ayudar a limpiar los datos antes de insertarlos
 def isEmptyString(s):
-    return s.strip() == ""
+    return s.strip() == v.emptyString
 
 
 def isNumber(s):
@@ -44,12 +46,8 @@ def isEmptylist(s):
 
 def isZipcode(s):
     if s < 99999 or s > 10000:
-        print("He pasado zipcode")
-        print(s)
         return False
     else:
-        print("No He pasado zipcode")
-        print(s)
         return True
 
 
@@ -64,8 +62,6 @@ def isDate(s):
     if isinstance(s, datetime):  # isinstance(s, datetime.date),type(s) is datetime.date
         return False
     else:
-        print("fecha hoy " + str(datetime.date))
-        print("fecha nacimiento " + s)
         return True
 
 
@@ -96,13 +92,13 @@ def getValue(map, key):
 
 def toString(value):
     if value is None:
-        return ""
+        return v.emptyString
     else:
         return str(value)
 
 
 def toCSVLine(values):
-    line = ""
+    line = v.emptyString
     for value in values:
         line = line + value + ","
 

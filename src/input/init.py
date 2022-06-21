@@ -7,7 +7,7 @@ from core import funcionesMongo as fm
 if __name__ == '__main__':
     db = fm.getDatabase()
 
-    procs.insertFilms(db, 'movies.json')
+    procs.insertFilms(db, 'C:/Users/karellrodriguez/Desktop/src/data/movies.json')
 
     procs.director(db)
 
@@ -21,4 +21,10 @@ if __name__ == '__main__':
 
     procs.countries(db)
 
-    procs.insertUsers(db, 'users.json')
+    procs.insertUsers(db, 'C:/Users/karellrodriguez/Desktop/src/data/users.json')
+
+    #procs.deleteActors(db)
+    #procs.deleteGenres(db)
+    #procs.deleteCountries(db)
+    #procs.deleteDirectors(db)
+    #procs.deleteLanguages(db)

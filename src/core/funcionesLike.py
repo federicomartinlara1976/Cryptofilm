@@ -1,4 +1,4 @@
-import vars as v
+from core import vars as v
 
 
 def generateLike(view):

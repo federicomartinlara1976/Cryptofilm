@@ -1,5 +1,5 @@
-import utils as f
-import vars as v
+from core import utils as f
+from core import vars as v
 
 
 def validateUser(user):

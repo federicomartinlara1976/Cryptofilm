@@ -1,5 +1,5 @@
-import vars as v
-import funcionesUser as fu
+from core import vars as v
+from core import funcionesUser as fu
 
 
 # Insertar el follow

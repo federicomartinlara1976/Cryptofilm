@@ -1,7 +1,7 @@
 # Funciones
 from pymongo import MongoClient
 
-import cfg as c
+from core import cfg as c
 
 
 def getMongoClient():
